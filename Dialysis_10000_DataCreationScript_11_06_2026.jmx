@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="URL" elementType="Argument">
+            <stringProp name="Argument.name">URL</stringProp>
+            <stringProp name="Argument.value">apisprod.nha.gov.in</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="DistrictFilter" elementType="Argument">
+            <stringProp name="Argument.name">DistrictFilter</stringProp>
+            <stringProp name="Argument.value">PULWAMA</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
+        <intProp name="ThreadGroup.num_threads">50</intProp>
+        <intProp name="ThreadGroup.ramp_time">50</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">2</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PMJAY_AccessToken_Oauth2_Token" enabled="true">
+          <stringProp name="HTTPSampler.domain">${URL}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">pmjay/ext/token/oauth2/token</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="grant_type" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">client_credentials</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">grant_type</stringProp>
+              </elementProp>
+              <elementProp name="client_id" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">5hpm04lbe0rq8789ja9u6h32od</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">client_id</stringProp>
+              </elementProp>
+              <elementProp name="client_secret" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">1s9f5c7pn9pjt2h27otbsrqefib4p1grr185rqbkhgrc0q606qlo</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">client_secret</stringProp>
+              </elementProp>
+              <elementProp name="scope" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">StateAPIsResourceServer/read</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">scope</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Content-Type" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">AccessToken</stringProp>
+            <stringProp name="RegexExtractor.regex">&quot;access_token&quot;:&quot;(.*?)&quot;,</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default"></stringProp>
+            <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+            <stringProp name="RegexExtractor.match_number">0</stringProp>
+          </RegexExtractor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(1000,3000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PMJAY_Get_Dialysis_Details_v2" enabled="true">
+          <stringProp name="HTTPSampler.domain">${URL}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">pmjay/services/get/dialysisdetails/v2</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;fromDate&quot;: &quot;2026-06-04&quot;,&#xd;
+    &quot;toDate&quot;: &quot;2026-06-08&quot;,&#xd;
+    &quot;pagenumber&quot;: &quot;1&quot;,&#xd;
+    &quot;pagesize&quot;: &quot;10000&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="Content-Type" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${AccessToken}</stringProp>
+              </elementProp>
+              <elementProp name="Cookie" elementType="Header">
+                <stringProp name="Header.name">Cookie</stringProp>
+                <stringProp name="Header.value">XSRF-TOKEN=6cb0e435-4036-4b91-94bf-cdb8ab1ce81a</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="false">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import groovy.json.JsonSlurper
+import java.io.BufferedWriter
+import java.io.FileWriter
+import java.io.File
+
+def response = prev.getResponseDataAsString()
+def json = new JsonSlurper().parseText(response)
+
+def filePath = &quot;C:/Users/admin/Documents/Dialysis_Details/PMJAY_Dialysis_Data.csv&quot;
+def file = new File(filePath)
+
+// Create file and write header only once
+if (!file.exists()) {
+    file.createNewFile()
+
+    BufferedWriter headerWriter = new BufferedWriter(new FileWriter(file))
+    headerWriter.write(&quot;District_Name,Benificiary_Mobile,Facility_id,Patient_PMJAY_ID,State_Name,Abha_Id,Dialysis_datetime,Dialysis_Type,Patient_Name&quot;)
+    headerWriter.newLine()
+    headerWriter.close()
+}
+
+// Append records
+BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))
+
+json.data.each { row -&gt;
+
+    writer.write(
+        &quot;\&quot;${row.District_Name ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.Benificiary_Mobile ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.Facility_id ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.Patient_PMJAY_ID ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.State_Name ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.Abha_Id ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.Dialysis_datetime ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.Dialysis_Type ?: &apos;&apos;}\&quot;,&quot; +
+        &quot;\&quot;${row.Patient_Name ?: &apos;&apos;}\&quot;&quot;
+    )
+
+    writer.newLine()
+}
+
+writer.flush()
+writer.close()
+
+log.info(&quot;Successfully exported ${json.data.size()} records to ${filePath}&quot;)</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="false">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import groovy.json.JsonSlurper
+import java.io.BufferedWriter
+import java.io.FileWriter
+import java.io.File
+
+def targetDistrict = vars.get(&quot;DistrictFilter&quot;)
+
+def response = prev.getResponseDataAsString()
+def json = new JsonSlurper().parseText(response
+
+)// Capture API response time
+def responseTime = prev.getTime()
+
+def filePath = &quot;C:/Users/admin/Documents/Dialysis_Details/${targetDistrict}_Dialysis_Data.csv&quot;
+def file = new File(filePath)
+
+// Create file and header
+if (!file.exists()) {
+    file.createNewFile()
+
+    BufferedWriter headerWriter = new BufferedWriter(new FileWriter(file))
+    headerWriter.write(&quot;District_Name,Benificiary_Mobile,Facility_id,Patient_PMJAY_ID,State_Name,Abha_Id,Dialysis_datetime,Dialysis_Type,Patient_Name,Response_Time_ms&quot;)
+    headerWriter.newLine()
+    headerWriter.close()
+}
+
+BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))
+
+int totalRecords = 0
+int matchedRecords = 0
+
+json.data.each { row -&gt;
+
+    totalRecords++
+
+    // Debug - print all district/state values
+    log.info(&quot;District = [${row.District_Name}] | State = [${row.State_Name}]&quot;)
+
+    // Filter for PULWAMA
+    if (row.District_Name != null &amp;&amp;
+        row.District_Name.toString().trim().equalsIgnoreCase(targetDistrict)) {
+
+        matchedRecords++
+
+       writer.write(
+    &quot;\&quot;${row.District_Name ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.Benificiary_Mobile ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.Facility_id ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.Patient_PMJAY_ID ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.State_Name ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.Abha_Id ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.Dialysis_datetime ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.Dialysis_Type ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${row.Patient_Name ?: &apos;&apos;}\&quot;,&quot; +
+    &quot;\&quot;${responseTime}\&quot;&quot;
+        )
+        writer.newLine()
+    }
+}
+
+writer.flush()
+writer.close()
+
+log.info(&quot;===================================&quot;)
+log.info(&quot;Total Records = &quot; + totalRecords)
+log.info(&quot;Matched Records = &quot; + matchedRecords)
+log.info(&quot;CSV File = &quot; + filePath)
+log.info(&quot;===================================&quot;)
+log.info(&quot;Total Records Received: ${totalRecords}&quot;)
+log.info(&quot;Matching Records: ${matchedRecords}&quot;)
+log.info(&quot;Success Rate: ${(matchedRecords * 100.0 / totalRecords).round(2)}%&quot;)</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(1000,10000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener">
+        <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="influxdbMetricsSender" elementType="Argument">
+              <stringProp name="Argument.name">influxdbMetricsSender</stringProp>
+              <stringProp name="Argument.value">org.apache.jmeter.visualizers.backend.influxdb.HttpMetricsSender</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="influxdbUrl" elementType="Argument">
+              <stringProp name="Argument.name">influxdbUrl</stringProp>
+              <stringProp name="Argument.value">http://18.216.146.216:8086/write?db=jmeter</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="application" elementType="Argument">
+              <stringProp name="Argument.name">application</stringProp>
+              <stringProp name="Argument.value">PMJAY</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="measurement" elementType="Argument">
+              <stringProp name="Argument.name">measurement</stringProp>
+              <stringProp name="Argument.value">jmeter</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="summaryOnly" elementType="Argument">
+              <stringProp name="Argument.name">summaryOnly</stringProp>
+              <stringProp name="Argument.value">false</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="samplersRegex" elementType="Argument">
+              <stringProp name="Argument.name">samplersRegex</stringProp>
+              <stringProp name="Argument.value">.*</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="percentiles" elementType="Argument">
+              <stringProp name="Argument.name">percentiles</stringProp>
+              <stringProp name="Argument.value">90;95;99</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="testTitle" elementType="Argument">
+              <stringProp name="Argument.name">testTitle</stringProp>
+              <stringProp name="Argument.value">PMJAY_API_Test</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="eventTags" elementType="Argument">
+              <stringProp name="Argument.name">eventTags</stringProp>
+              <stringProp name="Argument.value"></stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
+      </BackendListener>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
