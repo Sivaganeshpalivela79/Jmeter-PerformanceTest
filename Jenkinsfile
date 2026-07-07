@@ -31,24 +31,29 @@ pipeline {
         }
 
         stage('Run JMeter Test') {
-            steps {
-                bat '''
-                echo =====================================
-                echo Running JMeter Test
-                echo =====================================
+    steps {
+        bat '''
+        echo =====================================
+        echo Running JMeter Test
+        echo =====================================
 
-                echo Workspace: %WORKSPACE%
+        if exist "%WORKSPACE%\\HTMLReport" (
+            echo Deleting old HTML Report...
+            rmdir /S /Q "%WORKSPACE%\\HTMLReport"
+        )
 
-                dir "%WORKSPACE%"
+        if exist "%WORKSPACE%\\results.jtl" (
+            del /Q "%WORKSPACE%\\results.jtl"
+        )
 
-                "%JMETER_HOME%\\bin\\jmeter.bat" -n ^
-                -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
-                -l "%WORKSPACE%\\results.jtl" ^
-                -e ^
-                -o "%WORKSPACE%\\HTMLReport"
-                '''
-            }
-        }
+        "%JMETER_HOME%\\bin\\jmeter.bat" -n ^
+        -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
+        -l "%WORKSPACE%\\results.jtl" ^
+        -e ^
+        -o "%WORKSPACE%\\HTMLReport"
+        '''
+    }
+}
     }
 
     post {
