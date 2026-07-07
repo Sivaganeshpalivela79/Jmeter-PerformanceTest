@@ -30,38 +30,62 @@ pipeline {
             }
         }
 
+        stage('Clean Previous Reports') {
+            steps {
+                bat '''
+                echo =====================================
+                echo Cleaning Previous Reports
+                echo =====================================
+
+                if exist "%WORKSPACE%\\HTMLReport" (
+                    echo Deleting old HTMLReport folder...
+                    rmdir /S /Q "%WORKSPACE%\\HTMLReport"
+                )
+
+                if exist "%WORKSPACE%\\results.jtl" (
+                    echo Deleting old results.jtl...
+                    del /Q "%WORKSPACE%\\results.jtl"
+                )
+
+                if exist "%WORKSPACE%\\jmeter.log" (
+                    echo Deleting old jmeter.log...
+                    del /Q "%WORKSPACE%\\jmeter.log"
+                )
+                '''
+            }
+        }
+
         stage('Run JMeter Test') {
-    steps {
-        bat '''
-        echo =====================================
-        echo Running JMeter Test
-        echo =====================================
+            steps {
+                bat '''
+                echo =====================================
+                echo Running JMeter Test
+                echo =====================================
 
-        if exist "%WORKSPACE%\\HTMLReport" (
-            echo Deleting old HTML Report...
-            rmdir /S /Q "%WORKSPACE%\\HTMLReport"
-        )
+                echo Workspace: %WORKSPACE%
 
-        if exist "%WORKSPACE%\\results.jtl" (
-            del /Q "%WORKSPACE%\\results.jtl"
-        )
+                dir "%WORKSPACE%"
 
-        "%JMETER_HOME%\\bin\\jmeter.bat" -n ^
-        -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
-        -l "%WORKSPACE%\\results.jtl" ^
-        -e ^
-        -o "%WORKSPACE%\\HTMLReport"
-        '''
-    }
-}
+                "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                -n ^
+                -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
+                -l "%WORKSPACE%\\results.jtl" ^
+                -e ^
+                -o "%WORKSPACE%\\HTMLReport"
+                '''
+            }
+        }
     }
 
     post {
         always {
 
-            echo "Archiving JMeter Results..."
+            echo "====================================="
+            echo "Archiving JMeter Results"
+            echo "====================================="
 
             archiveArtifacts artifacts: 'results.jtl', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'jmeter.log', allowEmptyArchive: true
             archiveArtifacts artifacts: 'HTMLReport/**', allowEmptyArchive: true
 
             publishHTML(target: [
@@ -72,8 +96,6 @@ pipeline {
                 reportFiles: 'index.html',
                 reportName: 'JMeter HTML Report'
             ])
-
-            echo "HTML Report Published Successfully"
         }
 
         success {
