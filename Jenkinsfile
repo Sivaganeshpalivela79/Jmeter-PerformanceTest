@@ -31,12 +31,20 @@ pipeline {
         }
 
         stage('Run JMeter') {
-            steps {
-                bat '''
-                "%JMETER_HOME%\\bin\\jmeter.bat" -n -t "Dialysis_10000_DataCreationScript_11_06_2026.jmx" -l results.jtl -e -o HTMLReport
-                '''
-            }
-        }
+    steps {
+        bat '''
+        echo Workspace: %WORKSPACE%
+
+        dir "%WORKSPACE%"
+
+        "%JMETER_HOME%\\bin\\jmeter.bat" -n ^
+        -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
+        -l "%WORKSPACE%\\results.jtl" ^
+        -e ^
+        -o "%WORKSPACE%\\HTMLReport"
+        '''
+    }
+}
     }
 
     post {
