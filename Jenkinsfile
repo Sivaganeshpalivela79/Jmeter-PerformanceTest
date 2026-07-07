@@ -30,27 +30,57 @@ pipeline {
             }
         }
 
-        stage('Run JMeter') {
-    steps {
-        bat '''
-        echo Workspace: %WORKSPACE%
+        stage('Run JMeter Test') {
+            steps {
+                bat '''
+                echo =====================================
+                echo Running JMeter Test
+                echo =====================================
 
-        dir "%WORKSPACE%"
+                echo Workspace: %WORKSPACE%
 
-        "%JMETER_HOME%\\bin\\jmeter.bat" -n ^
-        -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
-        -l "%WORKSPACE%\\results.jtl" ^
-        -e ^
-        -o "%WORKSPACE%\\HTMLReport"
-        '''
-    }
-}
+                dir "%WORKSPACE%"
+
+                "%JMETER_HOME%\\bin\\jmeter.bat" -n ^
+                -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
+                -l "%WORKSPACE%\\results.jtl" ^
+                -e ^
+                -o "%WORKSPACE%\\HTMLReport"
+                '''
+            }
+        }
     }
 
     post {
         always {
+
+            echo "Archiving JMeter Results..."
+
             archiveArtifacts artifacts: 'results.jtl', allowEmptyArchive: true
             archiveArtifacts artifacts: 'HTMLReport/**', allowEmptyArchive: true
+
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'HTMLReport',
+                reportFiles: 'index.html',
+                reportName: 'JMeter HTML Report'
+            ])
+
+            echo "HTML Report Published Successfully"
+        }
+
+        success {
+            echo "====================================="
+            echo "JMeter Test Execution SUCCESS"
+            echo "====================================="
+        }
+
+        failure {
+            echo "====================================="
+            echo "JMeter Test Execution FAILED"
+            echo "====================================="
         }
     }
 }
