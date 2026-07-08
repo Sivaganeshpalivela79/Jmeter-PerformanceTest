@@ -116,13 +116,18 @@ pipeline {
                     "Dialysis": {
 
                         bat """
-                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
-                        -n ^
-                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
-                        -l "%WORKSPACE%\\${REPORT_DIR}\\Dialysis.jtl" ^
-                        -j "%WORKSPACE%\\${REPORT_DIR}\\Dialysis.log" ^
-                        -e ^
-                        -o "%WORKSPACE%\\${REPORT_DIR}\\Dialysis"
+                        "%JMETER_HOME%\bin\jmeter.bat" ^
+-n ^
+-t "%WORKSPACE%\${SCRIPT_DIR}\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
+-l "%WORKSPACE%\${REPORT_DIR}\Dialysis.jtl" ^
+-j "%WORKSPACE%\${REPORT_DIR}\Dialysis.log" ^
+-Jthreads=${params.THREADS} ^
+-Jrampup=${params.RAMP_UP} ^
+-Jloops=${params.LOOPS} ^
+-Jduration=${params.DURATION} ^
+-Jenv=${params.ENVIRONMENT} ^
+-e ^
+-o "%WORKSPACE%\${REPORT_DIR}\Dialysis"
                         """
 
                     },
