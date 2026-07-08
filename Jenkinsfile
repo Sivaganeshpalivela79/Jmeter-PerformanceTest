@@ -18,11 +18,24 @@ pipeline {
         }
 
         stage('Clean Workspace') {
-            steps {
-                deleteDir()
-                checkout scm
-            }
-        }
+    steps {
+        bat '''
+        echo Cleaning old reports...
+
+        if exist "%WORKSPACE%\\HTMLReport" (
+            rmdir /S /Q "%WORKSPACE%\\HTMLReport"
+        )
+
+        if exist "%WORKSPACE%\\results.jtl" (
+            del /F /Q "%WORKSPACE%\\results.jtl"
+        )
+
+        if exist "%WORKSPACE%\\jmeter.log" (
+            del /F /Q "%WORKSPACE%\\jmeter.log"
+        )
+        '''
+    }
+}
 
         stage('Verify JMeter') {
             steps {
