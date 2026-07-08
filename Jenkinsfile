@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         JMETER_HOME = 'C:\\Users\\admin\\OneDrive\\Documents\\apache-jmeter-5.6.3\\apache-jmeter-5.6.3'
-        JMETER_TEST = 'Dialysis_10000_DataCreationScript_11_06_2026.jmx'
+        JMETER_TEST = 'EMP_003_SalaryReport.jmx'
         REPORT_DIR = 'HTMLReport'
         RESULTS_FILE = 'results.jtl'
         LOG_FILE = 'jmeter.log'
