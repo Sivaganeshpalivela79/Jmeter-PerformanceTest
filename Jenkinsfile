@@ -124,7 +124,6 @@ pipeline {
                         -Jthreads=${params.THREADS} ^
                         -Jrampup=${params.RAMP_UP} ^
                         -Jloops=${params.LOOPS} ^
-                        -Jduration=${params.DURATION} ^
                         -Jenv=${params.ENVIRONMENT} ^
                         -e ^
                         -o "%WORKSPACE%\${REPORT_DIR}\Dialysis"
@@ -142,7 +141,6 @@ pipeline {
                         -Jthreads=${params.THREADS} ^
                         -Jrampup=${params.RAMP_UP} ^
                         -Jloops=${params.LOOPS} ^
-                        -Jduration=${params.DURATION} ^
                         -Jenv=${params.ENVIRONMENT} ^
                         -e ^
                         -o "%WORKSPACE%\${REPORT_DIR}\EMP001"
@@ -160,7 +158,6 @@ pipeline {
                         -Jthreads=${params.THREADS} ^
                         -Jrampup=${params.RAMP_UP} ^
                         -Jloops=${params.LOOPS} ^
-                        -Jduration=${params.DURATION} ^
                         -Jenv=${params.ENVIRONMENT} ^
                         -e ^
                         -o "%WORKSPACE%\${REPORT_DIR}\EMP002"
@@ -178,7 +175,6 @@ pipeline {
                         -Jthreads=${params.THREADS} ^
                         -Jrampup=${params.RAMP_UP} ^
                         -Jloops=${params.LOOPS} ^
-                        -Jduration=${params.DURATION} ^
                         -Jenv=${params.ENVIRONMENT} ^
                         -e ^
                         -o "%WORKSPACE%\${REPORT_DIR}\EMP003"
@@ -200,7 +196,6 @@ pipeline {
                 -Jthreads=${params.THREADS} ^
                 -Jrampup=${params.RAMP_UP} ^
                 -Jloops=${params.LOOPS} ^
-                -Jduration=${params.DURATION} ^
                 -Jenv=${params.ENVIRONMENT} ^
                 -e ^
                 -o "%WORKSPACE%\${REPORT_DIR}\${reportName}"
