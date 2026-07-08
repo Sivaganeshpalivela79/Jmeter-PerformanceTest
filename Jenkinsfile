@@ -117,61 +117,72 @@ pipeline {
 
                         bat """
                         "%JMETER_HOME%\bin\jmeter.bat" ^
--n ^
--t "%WORKSPACE%\${SCRIPT_DIR}\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
--l "%WORKSPACE%\${REPORT_DIR}\Dialysis.jtl" ^
--j "%WORKSPACE%\${REPORT_DIR}\Dialysis.log" ^
--Jthreads=${params.THREADS} ^
--Jrampup=${params.RAMP_UP} ^
--Jloops=${params.LOOPS} ^
--Jduration=${params.DURATION} ^
--Jenv=${params.ENVIRONMENT} ^
--e ^
--o "%WORKSPACE%\${REPORT_DIR}\Dialysis"
+                        -n ^
+                        -t "%WORKSPACE%\${SCRIPT_DIR}\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
+                        -l "%WORKSPACE%\${REPORT_DIR}\Dialysis.jtl" ^
+                        -j "%WORKSPACE%\${REPORT_DIR}\Dialysis.log" ^
+                        -Jthreads=${params.THREADS} ^
+                        -Jrampup=${params.RAMP_UP} ^
+                        -Jloops=${params.LOOPS} ^
+                        -Jduration=${params.DURATION} ^
+                        -Jenv=${params.ENVIRONMENT} ^
+                        -e ^
+                        -o "%WORKSPACE%\${REPORT_DIR}\Dialysis"
                         """
-
                     },
 
                     "EMP001": {
 
                         bat """
-                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                        "%JMETER_HOME%\bin\jmeter.bat" ^
                         -n ^
-                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\EMP_001_SearchEmployeeById.jmx" ^
-                        -l "%WORKSPACE%\\${REPORT_DIR}\\EMP001.jtl" ^
-                        -j "%WORKSPACE%\\${REPORT_DIR}\\EMP001.log" ^
+                        -t "%WORKSPACE%\${SCRIPT_DIR}\EMP_001_SearchEmployeeById.jmx" ^
+                        -l "%WORKSPACE%\${REPORT_DIR}\EMP001.jtl" ^
+                        -j "%WORKSPACE%\${REPORT_DIR}\EMP001.log" ^
+                        -Jthreads=${params.THREADS} ^
+                        -Jrampup=${params.RAMP_UP} ^
+                        -Jloops=${params.LOOPS} ^
+                        -Jduration=${params.DURATION} ^
+                        -Jenv=${params.ENVIRONMENT} ^
                         -e ^
-                        -o "%WORKSPACE%\\${REPORT_DIR}\\EMP001"
+                        -o "%WORKSPACE%\${REPORT_DIR}\EMP001"
                         """
-
                     },
 
                     "EMP002": {
 
                         bat """
-                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                        "%JMETER_HOME%\bin\jmeter.bat" ^
                         -n ^
-                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\EMP_002_SearchByDepartment.jmx" ^
-                        -l "%WORKSPACE%\\${REPORT_DIR}\\EMP002.jtl" ^
-                        -j "%WORKSPACE%\\${REPORT_DIR}\\EMP002.log" ^
+                        -t "%WORKSPACE%\${SCRIPT_DIR}\EMP_002_SearchByDepartment.jmx" ^
+                        -l "%WORKSPACE%\${REPORT_DIR}\EMP002.jtl" ^
+                        -j "%WORKSPACE%\${REPORT_DIR}\EMP002.log" ^
+                        -Jthreads=${params.THREADS} ^
+                        -Jrampup=${params.RAMP_UP} ^
+                        -Jloops=${params.LOOPS} ^
+                        -Jduration=${params.DURATION} ^
+                        -Jenv=${params.ENVIRONMENT} ^
                         -e ^
-                        -o "%WORKSPACE%\\${REPORT_DIR}\\EMP002"
+                        -o "%WORKSPACE%\${REPORT_DIR}\EMP002"
                         """
-
                     },
 
                     "EMP003": {
 
                         bat """
-                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                        "%JMETER_HOME%\bin\jmeter.bat" ^
                         -n ^
-                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\EMP_003_SalaryReport.jmx" ^
-                        -l "%WORKSPACE%\\${REPORT_DIR}\\EMP003.jtl" ^
-                        -j "%WORKSPACE%\\${REPORT_DIR}\\EMP003.log" ^
+                        -t "%WORKSPACE%\${SCRIPT_DIR}\EMP_003_SalaryReport.jmx" ^
+                        -l "%WORKSPACE%\${REPORT_DIR}\EMP003.jtl" ^
+                        -j "%WORKSPACE%\${REPORT_DIR}\EMP003.log" ^
+                        -Jthreads=${params.THREADS} ^
+                        -Jrampup=${params.RAMP_UP} ^
+                        -Jloops=${params.LOOPS} ^
+                        -Jduration=${params.DURATION} ^
+                        -Jenv=${params.ENVIRONMENT} ^
                         -e ^
-                        -o "%WORKSPACE%\\${REPORT_DIR}\\EMP003"
+                        -o "%WORKSPACE%\${REPORT_DIR}\EMP003"
                         """
-
                     }
 
                 )
@@ -181,15 +192,19 @@ pipeline {
                 def reportName = params.TEST_SCRIPT.replace(".jmx","")
 
                 bat """
-                "%JMETER_HOME%\\bin\\jmeter.bat" ^
+               "%JMETER_HOME%\bin\jmeter.bat" ^
                 -n ^
-                -t "%WORKSPACE%\\${SCRIPT_DIR}\\${params.TEST_SCRIPT}" ^
-                -l "%WORKSPACE%\\${REPORT_DIR}\\${reportName}.jtl" ^
-                -j "%WORKSPACE%\\${REPORT_DIR}\\${reportName}.log" ^
+                -t "%WORKSPACE%\${SCRIPT_DIR}\${params.TEST_SCRIPT}" ^
+                -l "%WORKSPACE%\${REPORT_DIR}\${reportName}.jtl" ^
+                -j "%WORKSPACE%\${REPORT_DIR}\${reportName}.log" ^
+                -Jthreads=${params.THREADS} ^
+                -Jrampup=${params.RAMP_UP} ^
+                -Jloops=${params.LOOPS} ^
+                -Jduration=${params.DURATION} ^
+                -Jenv=${params.ENVIRONMENT} ^
                 -e ^
-                -o "%WORKSPACE%\\${REPORT_DIR}\\${reportName}"
+                -o "%WORKSPACE%\${REPORT_DIR}\${reportName}"
                 """
-
             }
 
         }
