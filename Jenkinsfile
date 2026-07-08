@@ -3,54 +3,42 @@ pipeline {
 
     environment {
         JMETER_HOME = 'C:\\Users\\admin\\OneDrive\\Documents\\apache-jmeter-5.6.3\\apache-jmeter-5.6.3'
+        JMETER_TEST = 'Dialysis_10000_DataCreationScript_11_06_2026.jmx'
+        REPORT_DIR = 'HTMLReport'
+        RESULTS_FILE = 'results.jtl'
+        LOG_FILE = 'jmeter.log'
     }
 
     stages {
 
-        stage('Verify Environment') {
+        stage('Checkout Source') {
             steps {
-                bat '''
-                echo =====================================
-                echo Current Directory
-                echo =====================================
-                cd
-
-                echo.
-                echo =====================================
-                echo Workspace Files
-                echo =====================================
-                dir
-
-                echo.
-                echo =====================================
-                echo JMeter Version
-                echo =====================================
-                "%JMETER_HOME%\\bin\\jmeter.bat" -v
-                '''
+                checkout scm
             }
         }
 
-        stage('Clean Previous Reports') {
+        stage('Clean Workspace') {
+            steps {
+                deleteDir()
+                checkout scm
+            }
+        }
+
+        stage('Verify JMeter') {
             steps {
                 bat '''
-                echo =====================================
-                echo Cleaning Previous Reports
-                echo =====================================
+                echo ==========================================
+                echo VERIFY JMETER INSTALLATION
+                echo ==========================================
 
-                if exist "%WORKSPACE%\\HTMLReport" (
-                    echo Deleting old HTMLReport folder...
-                    rmdir /S /Q "%WORKSPACE%\\HTMLReport"
-                )
+                echo Workspace:
+                cd
 
-                if exist "%WORKSPACE%\\results.jtl" (
-                    echo Deleting old results.jtl...
-                    del /Q "%WORKSPACE%\\results.jtl"
-                )
+                echo.
+                dir
 
-                if exist "%WORKSPACE%\\jmeter.log" (
-                    echo Deleting old jmeter.log...
-                    del /Q "%WORKSPACE%\\jmeter.log"
-                )
+                echo.
+                "%JMETER_HOME%\\bin\\jmeter.bat" -v
                 '''
             }
         }
@@ -58,56 +46,88 @@ pipeline {
         stage('Run JMeter Test') {
             steps {
                 bat '''
-                echo =====================================
-                echo Running JMeter Test
-                echo =====================================
+                echo ==========================================
+                echo RUNNING JMETER TEST
+                echo ==========================================
 
-                echo Workspace: %WORKSPACE%
+                if exist "%WORKSPACE%\\%REPORT_DIR%" (
+                    rmdir /S /Q "%WORKSPACE%\\%REPORT_DIR%"
+                )
 
-                dir "%WORKSPACE%"
+                if exist "%WORKSPACE%\\%RESULTS_FILE%" (
+                    del /Q "%WORKSPACE%\\%RESULTS_FILE%"
+                )
+
+                if exist "%WORKSPACE%\\%LOG_FILE%" (
+                    del /Q "%WORKSPACE%\\%LOG_FILE%"
+                )
 
                 "%JMETER_HOME%\\bin\\jmeter.bat" ^
                 -n ^
-                -t "%WORKSPACE%\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
-                -l "%WORKSPACE%\\results.jtl" ^
+                -t "%WORKSPACE%\\%JMETER_TEST%" ^
+                -l "%WORKSPACE%\\%RESULTS_FILE%" ^
+                -j "%WORKSPACE%\\%LOG_FILE%" ^
                 -e ^
-                -o "%WORKSPACE%\\HTMLReport"
+                -o "%WORKSPACE%\\%REPORT_DIR%"
+                '''
+            }
+        }
+
+        stage('Verify Report') {
+            steps {
+                bat '''
+                echo ==========================================
+                echo VERIFY GENERATED REPORT
+                echo ==========================================
+
+                dir "%WORKSPACE%"
+
+                echo.
+                dir "%WORKSPACE%\\%REPORT_DIR%"
+
+                echo.
+                dir "%WORKSPACE%\\%REPORT_DIR%\\content\\js"
                 '''
             }
         }
     }
 
     post {
+
         always {
 
-            echo "====================================="
-            echo "Archiving JMeter Results"
-            echo "====================================="
+            echo "=========================================="
+            echo "ARCHIVING REPORTS"
+            echo "=========================================="
 
-            archiveArtifacts artifacts: 'results.jtl', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'jmeter.log', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'HTMLReport/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/*.jtl', fingerprint: true
+            archiveArtifacts artifacts: '**/*.log', fingerprint: true
+            archiveArtifacts artifacts: 'HTMLReport/**', fingerprint: true
 
-            publishHTML(target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'HTMLReport',
-                reportFiles: 'index.html',
-                reportName: 'JMeter HTML Report'
+            publishHTML([
+                target: [
+                    reportDir: 'HTMLReport',
+                    reportFiles: 'index.html',
+                    reportName: 'JMeter HTML Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false,
+                    includes: '**/*',
+                    escapeUnderscores: false
+                ]
             ])
         }
 
         success {
-            echo "====================================="
-            echo "JMeter Test Execution SUCCESS"
-            echo "====================================="
+            echo "=========================================="
+            echo "JMETER EXECUTION SUCCESSFUL"
+            echo "=========================================="
         }
 
         failure {
-            echo "====================================="
-            echo "JMeter Test Execution FAILED"
-            echo "====================================="
+            echo "=========================================="
+            echo "JMETER EXECUTION FAILED"
+            echo "=========================================="
         }
     }
 }
