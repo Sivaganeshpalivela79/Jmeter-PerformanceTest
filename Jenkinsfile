@@ -8,21 +8,56 @@ pipeline {
         REPORT_DIR = 'reports'
     }
 
-    parameters {
+   parameters {
 
-        choice(
-            name: 'TEST_SCRIPT',
-            choices: [
-                'ALL',
-                'Dialysis_10000_DataCreationScript_11_06_2026.jmx',
-                'EMP_001_SearchEmployeeById.jmx',
-                'EMP_002_SearchByDepartment.jmx',
-                'EMP_003_SearchSalaryReport.jmx'
-            ],
-            description: 'Select JMeter Script'
-        )
+    choice(
+        name: 'TEST_SCRIPT',
+        choices: [
+            'ALL',
+            'Dialysis_10000_DataCreationScript_11_06_2026.jmx',
+            'EMP_001_SearchEmployeeById.jmx',
+            'EMP_002_SearchByDepartment.jmx',
+            'EMP_003_SalaryReport.jmx'
+        ],
+        description: 'Select JMeter Script'
+    )
 
-    }
+    string(
+        name: 'THREADS',
+        defaultValue: '10',
+        description: 'Number of Virtual Users'
+    )
+
+    string(
+        name: 'RAMP_UP',
+        defaultValue: '10',
+        description: 'Ramp-Up Time (seconds)'
+    )
+
+    string(
+        name: 'LOOPS',
+        defaultValue: '1',
+        description: 'Loop Count'
+    )
+
+    string(
+        name: 'DURATION',
+        defaultValue: '60',
+        description: 'Test Duration (seconds)'
+    )
+
+    choice(
+        name: 'ENVIRONMENT',
+        choices: [
+            'DEV',
+            'UAT',
+            'PERF',
+            'PROD'
+        ],
+        description: 'Select Target Environment'
+    )
+
+}
 
     stages {
 
