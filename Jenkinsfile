@@ -1,10 +1,27 @@
 pipeline {
+
     agent any
 
     environment {
         JMETER_HOME = 'C:\\Users\\admin\\OneDrive\\Documents\\apache-jmeter-5.6.3\\apache-jmeter-5.6.3'
         SCRIPT_DIR = 'JMeterScripts'
         REPORT_DIR = 'reports'
+    }
+
+    parameters {
+
+        choice(
+            name: 'TEST_SCRIPT',
+            choices: [
+                'ALL',
+                'Dialysis_10000_DataCreationScript_11_06_2026.jmx',
+                'EMP_001_SearchEmployeeById.jmx',
+                'EMP_002_SearchByDepartment.jmx',
+                'EMP_003_SalaryReport.jmx'
+            ],
+            description: 'Select JMeter Script'
+        )
+
     }
 
     stages {
@@ -22,21 +39,18 @@ pipeline {
                 echo VERIFY ENVIRONMENT
                 echo ==========================================
 
-                echo Workspace:
+                echo Workspace
                 cd
 
                 echo.
-
                 echo Repository Files
                 dir
 
                 echo.
-
                 echo JMeter Scripts
                 dir JMeterScripts
 
                 echo.
-
                 "%JMETER_HOME%\\bin\\jmeter.bat" -v
                 '''
             }
@@ -55,21 +69,23 @@ pipeline {
         }
 
         stage('Run JMeter Tests') {
+
             steps {
+
                 script {
 
                     if (params.TEST_SCRIPT == "ALL") {
 
                         def scripts = [
-                            "Dialysis_10000_DataCreationScript_11_06_2026.jmx",
-                            "EMP_001_SearchEmployeeById.jmx",
-                            "EMP_002_SearchByDepartment.jmx",
-                            "EMP_003_SalaryReport.jmx"
+                                "Dialysis_10000_DataCreationScript_11_06_2026.jmx",
+                                "EMP_001_SearchEmployeeById.jmx",
+                                "EMP_002_SearchByDepartment.jmx",
+                                "EMP_003_SalaryReport.jmx"
                         ]
 
-                        for (s in scripts) {
+                        for (scriptName in scripts) {
 
-                            def reportName = s.replace(".jmx","")
+                            def reportName = scriptName.replace(".jmx","")
 
                             bat """
                             echo ==========================================
@@ -78,7 +94,7 @@ pipeline {
 
                             "%JMETER_HOME%\\\\bin\\\\jmeter.bat" ^
                             -n ^
-                            -t "%WORKSPACE%\\\\${SCRIPT_DIR}\\\\${s}" ^
+                            -t "%WORKSPACE%\\\\${SCRIPT_DIR}\\\\${scriptName}" ^
                             -l "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}.jtl" ^
                             -j "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}.log" ^
                             -e ^
@@ -86,7 +102,8 @@ pipeline {
                             """
                         }
 
-                    } else {
+                    }
+                    else {
 
                         def reportName = params.TEST_SCRIPT.replace(".jmx","")
 
@@ -106,11 +123,15 @@ pipeline {
                     }
 
                 }
+
             }
+
         }
 
         stage('Verify Reports') {
+
             steps {
+
                 bat '''
                 echo ==========================================
                 echo GENERATED REPORTS
@@ -118,38 +139,52 @@ pipeline {
 
                 dir reports
                 '''
+
             }
+
         }
+
     }
 
     post {
 
         always {
 
-            archiveArtifacts artifacts: 'reports/**/*.jtl', fingerprint: true
-            archiveArtifacts artifacts: 'reports/**/*.log', fingerprint: true
-            archiveArtifacts artifacts: 'reports/**', fingerprint: true
+            echo "====================================="
+            echo "ARCHIVING REPORTS"
+            echo "====================================="
+
+            archiveArtifacts artifacts: 'reports/**/*.jtl', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'reports/**/*.log', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
 
             publishHTML(target: [
-                reportDir: 'reports',
-                reportFiles: '**/index.html',
-                reportName: 'JMeter HTML Reports',
-                keepAll: true,
+                allowMissing: true,
                 alwaysLinkToLastBuild: true,
-                allowMissing: true
+                keepAll: true,
+                reportDir: 'reports',
+                reportFiles: 'index.html',
+                reportName: 'JMeter HTML Reports'
             ])
+
         }
 
         success {
+
             echo "====================================="
             echo "JMeter Execution Completed Successfully"
             echo "====================================="
+
         }
 
         failure {
+
             echo "====================================="
             echo "JMeter Execution Failed"
             echo "====================================="
+
         }
+
     }
+
 }
