@@ -17,7 +17,7 @@ pipeline {
                 'Dialysis_10000_DataCreationScript_11_06_2026.jmx',
                 'EMP_001_SearchEmployeeById.jmx',
                 'EMP_002_SearchByDepartment.jmx',
-                'EMP_003_SalaryReport.jmx'
+                'EMP_003_SearchSalaryReport.jmx'
             ],
             description: 'Select JMeter Script'
         )
@@ -77,15 +77,15 @@ pipeline {
                     if (params.TEST_SCRIPT == "ALL") {
 
                         def scripts = [
-                                "Dialysis_10000_DataCreationScript_11_06_2026.jmx",
-                                "EMP_001_SearchEmployeeById.jmx",
-                                "EMP_002_SearchByDepartment.jmx",
-                                "EMP_003_SalaryReport.jmx"
+                            "Dialysis_10000_DataCreationScript_11_06_2026.jmx",
+                            "EMP_001_SearchEmployeeById.jmx",
+                            "EMP_002_SearchByDepartment.jmx",
+                            "EMP_003_SalaryReport.jmx"
                         ]
 
                         for (scriptName in scripts) {
 
-                            def reportName = scriptName.replace(".jmx","")
+                            def reportName = scriptName.replace(".jmx", "")
 
                             bat """
                             echo ==========================================
@@ -102,10 +102,9 @@ pipeline {
                             """
                         }
 
-                    }
-                    else {
+                    } else {
 
-                        def reportName = params.TEST_SCRIPT.replace(".jmx","")
+                        def reportName = params.TEST_SCRIPT.replace(".jmx", "")
 
                         bat """
                         echo ==========================================
@@ -154,9 +153,23 @@ pipeline {
             echo "ARCHIVING REPORTS"
             echo "====================================="
 
-            archiveArtifacts artifacts: 'reports/**/*.jtl', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'reports/**/*.log', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
+            archiveArtifacts(
+                artifacts: 'reports/**/*.jtl',
+                allowEmptyArchive: true,
+                fingerprint: true
+            )
+
+            archiveArtifacts(
+                artifacts: 'reports/**/*.log',
+                allowEmptyArchive: true,
+                fingerprint: true
+            )
+
+            archiveArtifacts(
+                artifacts: 'reports/**',
+                allowEmptyArchive: true,
+                fingerprint: true
+            )
 
             publishHTML(target: [
                 allowMissing: true,
@@ -166,6 +179,12 @@ pipeline {
                 reportFiles: 'index.html',
                 reportName: 'JMeter HTML Reports'
             ])
+
+            perfReport(
+                sourceDataFiles: 'reports/*.jtl',
+                filterRegex: '',
+                showTrendGraphs: true
+            )
 
         }
 
@@ -186,3 +205,5 @@ pipeline {
         }
 
     }
+
+}
