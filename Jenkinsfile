@@ -70,63 +70,93 @@ pipeline {
 
         stage('Run JMeter Tests') {
 
-            steps {
+    steps {
 
-                script {
+        script {
 
-                    if (params.TEST_SCRIPT == "ALL") {
+            if (params.TEST_SCRIPT == "ALL") {
 
-                        def scripts = [
-                            "Dialysis_10000_DataCreationScript_11_06_2026.jmx",
-                            "EMP_001_SearchEmployeeById.jmx",
-                            "EMP_002_SearchByDepartment.jmx",
-                            "EMP_003_SalaryReport.jmx"
-                        ]
+                parallel(
 
-                        for (scriptName in scripts) {
-
-                            def reportName = scriptName.replace(".jmx", "")
-
-                            bat """
-                            echo ==========================================
-                            echo Running ${reportName}
-                            echo ==========================================
-
-                            "%JMETER_HOME%\\\\bin\\\\jmeter.bat" ^
-                            -n ^
-                            -t "%WORKSPACE%\\\\${SCRIPT_DIR}\\\\${scriptName}" ^
-                            -l "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}.jtl" ^
-                            -j "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}.log" ^
-                            -e ^
-                            -o "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}"
-                            """
-                        }
-
-                    } else {
-
-                        def reportName = params.TEST_SCRIPT.replace(".jmx", "")
+                    "Dialysis": {
 
                         bat """
-                        echo ==========================================
-                        echo Running ${reportName}
-                        echo ==========================================
-
-                        "%JMETER_HOME%\\\\bin\\\\jmeter.bat" ^
+                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
                         -n ^
-                        -t "%WORKSPACE%\\\\${SCRIPT_DIR}\\\\${params.TEST_SCRIPT}" ^
-                        -l "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}.jtl" ^
-                        -j "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}.log" ^
+                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\Dialysis_10000_DataCreationScript_11_06_2026.jmx" ^
+                        -l "%WORKSPACE%\\${REPORT_DIR}\\Dialysis.jtl" ^
+                        -j "%WORKSPACE%\\${REPORT_DIR}\\Dialysis.log" ^
                         -e ^
-                        -o "%WORKSPACE%\\\\${REPORT_DIR}\\\\${reportName}"
+                        -o "%WORKSPACE%\\${REPORT_DIR}\\Dialysis"
                         """
+
+                    },
+
+                    "EMP001": {
+
+                        bat """
+                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                        -n ^
+                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\EMP_001_SearchEmployeeById.jmx" ^
+                        -l "%WORKSPACE%\\${REPORT_DIR}\\EMP001.jtl" ^
+                        -j "%WORKSPACE%\\${REPORT_DIR}\\EMP001.log" ^
+                        -e ^
+                        -o "%WORKSPACE%\\${REPORT_DIR}\\EMP001"
+                        """
+
+                    },
+
+                    "EMP002": {
+
+                        bat """
+                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                        -n ^
+                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\EMP_002_SearchByDepartment.jmx" ^
+                        -l "%WORKSPACE%\\${REPORT_DIR}\\EMP002.jtl" ^
+                        -j "%WORKSPACE%\\${REPORT_DIR}\\EMP002.log" ^
+                        -e ^
+                        -o "%WORKSPACE%\\${REPORT_DIR}\\EMP002"
+                        """
+
+                    },
+
+                    "EMP003": {
+
+                        bat """
+                        "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                        -n ^
+                        -t "%WORKSPACE%\\${SCRIPT_DIR}\\EMP_003_SalaryReport.jmx" ^
+                        -l "%WORKSPACE%\\${REPORT_DIR}\\EMP003.jtl" ^
+                        -j "%WORKSPACE%\\${REPORT_DIR}\\EMP003.log" ^
+                        -e ^
+                        -o "%WORKSPACE%\\${REPORT_DIR}\\EMP003"
+                        """
+
                     }
 
-                }
+                )
+
+            } else {
+
+                def reportName = params.TEST_SCRIPT.replace(".jmx","")
+
+                bat """
+                "%JMETER_HOME%\\bin\\jmeter.bat" ^
+                -n ^
+                -t "%WORKSPACE%\\${SCRIPT_DIR}\\${params.TEST_SCRIPT}" ^
+                -l "%WORKSPACE%\\${REPORT_DIR}\\${reportName}.jtl" ^
+                -j "%WORKSPACE%\\${REPORT_DIR}\\${reportName}.log" ^
+                -e ^
+                -o "%WORKSPACE%\\${REPORT_DIR}\\${reportName}"
+                """
 
             }
 
         }
 
+    }
+
+}
         stage('Verify Reports') {
 
             steps {
