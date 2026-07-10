@@ -11,7 +11,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="URL" elementType="Argument">
             <stringProp name="Argument.name">URL</stringProp>
-            <stringProp name="Argument.value">${__P(env,apisprod.nha.gov.in)}</stringProp>
+            <stringProp name="Argument.value">apisprod.nha.gov.in</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="DistrictFilter" elementType="Argument">
