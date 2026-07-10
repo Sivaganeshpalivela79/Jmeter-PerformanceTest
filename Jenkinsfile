@@ -46,17 +46,6 @@ pipeline {
         description: 'Test Duration (seconds)'
     )
 
-    choice(
-        name: 'ENVIRONMENT',
-        choices: [
-            'DEV',
-            'UAT',
-            'PERF',
-            'PROD'
-        ],
-        description: 'Select Target Environment'
-    )
-
 }
 
     stages {
